@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+    "http://struts.apache.org/dtds/struts-2.5.dtd">
+<struts>
+    <constant name="struts.devMode" value="true" />
+    <package name="default" namespace="/" extends="struts-default">
+        <interceptors>
+            <interceptor name="navigation" class="com.studentsearch.action.NavigationInterceptor" />
+            <interceptor-stack name="defaultStack">
+                <interceptor-ref name="navigation" />
+                <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
+        </interceptors>
+        <default-interceptor-ref name="defaultStack" />
+
+        <action name="studenthome" class="com.studentsearch.action.StudentAction" method="studenthome">
+            <result name="success">/index.jsp</result>
+        </action>
+        <action name="studentSearch" class="com.studentsearch.action.StudentAction" method="studentSearch">
+            <result name="success">/search.jsp</result>
+        </action>
+        <action name="addStudent" class="com.studentsearch.action.StudentAction" method="studentAdd">
+            <result name="success">/add.jsp</result>
+        </action>
+        <action name="search" class="com.studentsearch.action.StudentAction" method="search">
+            <result name="success">/search.jsp</result>
+        </action>
+        <action name="list" class="com.studentsearch.action.StudentAction" method="list">
+            <result name="success">/search.jsp</result>
+            <result name="error">/search.jsp</result>
+        </action>
+        <action name="save" class="com.studentsearch.action.StudentAction" method="createStudent">
+            <result name="success">/add.jsp</result>
+            <result name="error">/add.jsp</result>
+            <result name="list">/search.jsp</result>
+        </action>
+        <action name="updateStudent" class="com.studentsearch.action.StudentAction" method="updateStudent">
+            <result name="success">/add.jsp</result>
+            <result name="input">/add.jsp</result>
+            <result name="list">/search.jsp</result>
+        </action>
+        <action name="deleteStudent" class="com.studentsearch.action.StudentAction" method="deleteStudent">
+            <result name="success">/search.jsp</result>
+            <result name="input">/search.jsp</result>
+        </action>
+        <action name="editStudent" class="com.studentsearch.action.StudentAction" method="editStudent">
+            <result name="success">/add.jsp</result>
+            <result name="input">/add.jsp</result>
+            <result name="error">/add.jsp</result>
+        </action>
+    </package>
+</struts>

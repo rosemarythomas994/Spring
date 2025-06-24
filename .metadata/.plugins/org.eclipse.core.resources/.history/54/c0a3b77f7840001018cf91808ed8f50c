@@ -1,0 +1,27 @@
+package com.studentsearch.action;
+
+import java.util.Map;
+
+import org.apache.struts2.interceptor.SessionAware;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.student.facade.FacadeManagerBean;
+import com.studentsearch.controller.StudentController;
+
+public class GenericAction extends ActionSupport implements SessionAware {
+    private static final long serialVersionUID = 1L;
+    private transient Map<String, Object> sessionMap;
+    private FacadeManagerBean facadeManager;
+    public StudentController getStudentController() {
+        if (facadeManager == null) {
+            System.out.println("FacadeManagerBean is null; using temporary instance");
+            return new StudentController(new FacadeManagerBean()); // Fallback for testing
+        }
+        return new StudentController(facadeManager);
+    }
+
+    @Override
+    public void setSession(Map<String, Object> sessionMap) {
+        this.sessionMap = sessionMap;
+    }
+}

@@ -1,0 +1,22 @@
+package com.studentsearch.action;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.studentsearch.controller.StudentController;
+import com.student.facade.FacadeManagerBean;
+import org.apache.struts2.interceptor.SessionAware;
+import java.util.Map;
+
+public class GenericAction extends ActionSupport implements SessionAware {
+    private static final long serialVersionUID = 1L;
+    private transient Map<String, Object> sessionMap;
+
+    public StudentController getStudentController() {
+        // Temporary; use DI (e.g., Spring or EJB) in production
+        return new StudentController(new FacadeManagerBean());
+    }
+
+    @Override
+    public void setSession(Map<String, Object> sessionMap) {
+        this.sessionMap = sessionMap;
+    }
+}

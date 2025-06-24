@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="hasShownOverlayPopupBefore" value="true"/>
+	<section name="java.lang.Class">
+		<item key="replaceBarOpen" value="true"/>
+		<list key="findhistory">
+			<item value="getStudent"/>
+			<item value="studentValue."/>
+			<item value="student."/>
+			<item value="facadeManager"/>
+			<item value="label.SearchStudent"/>
+			<item value="addStudent"/>
+			<item value="home"/>
+			<item value="Facadeanager"/>
+			<item value="student"/>
+			<item value="Student_Value"/>
+			<item value="DB_ERROR"/>
+			<item value="SEARCH_STUDENT_KEY"/>
+			<item value="Error in deleteStudent:"/>
+			<item value="updateStudent"/>
+			<item value="context"/>
+		</list>
+		<list key="replacehistory">
+			<item value="student."/>
+			<item value="studentValue."/>
+			<item value="StudentValue"/>
+		</list>
+	</section>
+</section>

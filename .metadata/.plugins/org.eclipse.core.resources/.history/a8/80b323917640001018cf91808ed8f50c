@@ -1,0 +1,31 @@
+package com.student.util;
+
+import com.opensymphony.xwork2.conversion.TypeConverter;
+import com.opensymphony.xwork2.conversion.impl.DefaultTypeConverter;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+/**
+ * DateConverter is a custom type converter for Struts 2 that handles
+ * conversion of String date values to java.util.Date objects using MM/dd/yyyy format.
+ */
+public class DateConverter extends DefaultTypeConverter implements TypeConverter {
+
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+
+    @Override
+    public Object convertValue(Object value, Class toType) {
+        if (toType == Date.class && value instanceof String[] params) {
+            if (params.length > 0 && params[0] != null && !params[0].isEmpty()) {
+                try {
+                    return dateFormat.parse(params[0]);
+                } catch (ParseException e) {
+                    throw new RuntimeException("Invalid date format for: " + params[0], e);
+                }
+            }
+        }
+        return null;
+    }
+}

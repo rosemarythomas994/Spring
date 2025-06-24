@@ -1,0 +1,150 @@
+package com.studentsearch.model;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.struts2.interceptor.RequestAware;
+
+/**
+ * The Student class represents a student entity in the Student Management System.
+ * It includes student attributes like ID, name, department, date of birth, date of admission,
+ * gender, and address. It also manages the department list for UI rendering.
+ *
+ * @author Rose Mary Thomas
+ * @version 1.0
+ * @since 2025-05-30
+ */
+public class Student implements Serializable, RequestAware {
+    private static final long serialVersionUID = 1L;
+    private int studentId;
+    private String name;
+    private String department;
+    private Date dob;
+    private Date doa;
+    private String gender;
+    private String address;
+    private GridData gridData;
+    private List<Student> studentList;
+    private Map<String, String> departmentList;
+    private Map<String, Object> request;
+
+    /**
+     * Initializes the department drop-down list.
+     */
+    public void initDepartmentList() {
+        departmentList = new LinkedHashMap<>();
+        departmentList.put("", "-- Select Department --");
+        departmentList.put("IT", "IT");
+        departmentList.put("CSE", "CSE");
+        departmentList.put("Mechanical", "Mechanical");
+        departmentList.put("ECE", "ECE");
+        departmentList.put("Civil", "Civil");
+        // Put the department list in the request scope
+        if (request != null) {
+            request.put("departmentList", departmentList);
+            System.out.println("Department list set in request scope via RequestAware: " + departmentList);
+        } else {
+            System.out.println("Request map is null in initDepartmentList");
+        }
+    }
+
+    public Map<String, String> getDepartmentList() {
+        return departmentList;
+    }
+
+    public void setDepartmentList(Map<String, String> departmentList) {
+        this.departmentList = departmentList;
+    }
+
+    @Override
+    public void setRequest(Map<String, Object> request) {
+        this.request = request;
+        System.out.println("Request map set in Student: " + (request != null));
+    }
+
+    // Existing getters and setters
+    public int getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public Date getDoa() {
+        return doa;
+    }
+
+    public void setDoa(Date doa) {
+        this.doa = doa;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public GridData getGridData() {
+        return gridData;
+    }
+
+    public void setGridData(GridData gridData) {
+        this.gridData = gridData;
+    }
+
+    public List<Student> getStudentList() {
+        return studentList;
+    }
+
+    public void setStudentList(List<Student> studentList) {
+        this.studentList = studentList;
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    @Override
+    public String toString() {
+        return "Student [studentId=" + studentId + ", name=" + name + ", department=" + department + ", dob=" + dob
+                + ", doa=" + doa + ", gender=" + gender + ", address=" + address + "]";
+    }
+}

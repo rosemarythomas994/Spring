@@ -1,0 +1,65 @@
+package com.studentsearch.controller;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+
+import com.student.facade.FacadeManager;
+import com.student.model.StudentValue;
+import com.student.servicelocator.ServiceLocator;
+import com.studentsearch.model.Student;
+import com.studentsearch.util.StudentConverter;
+
+
+public class StudentController {
+	private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
+
+	/*
+	 * private FacadeManager facadeManager; public
+	 * StudentController(FacadeManagerBean facadeManager) { this.facadeManager =
+	 * facadeManager; } public StudentController() { this.facadeManager = new
+	 * FacadeManagerBean(); }
+	 */
+	
+	public FacadeManager getFacadeManger()
+	{
+		return ServiceLocator.getInstance().getFacadeManager(FacadeManager.class);
+	}
+   
+    public List<Student> searchStudents(Student searchStudent) {
+//    	StudentValue backendStudent = StudentConverter.convertToBackendStudent(searchStudent);
+//        List<StudentValue> backendList = getFacadeManger().searchStudents(backendStudent);
+        return StudentConverter.convertToFrontendStudentList(searchStudent);
+    }
+
+    public boolean createStudent(Student student) {
+    	StudentValue backendStudent = StudentConverter.convertToBackendStudent(student);
+        return getFacadeManger().createStudent(backendStudent);
+    }
+
+    public Student updateStudent(Student student) {
+    	StudentValue backendStudent = StudentConverter.convertToBackendStudent(student);
+        boolean updated = getFacadeManger().updateStudent(backendStudent);
+        if (updated) {
+            return student;
+        }
+        return null;
+    }
+
+    public boolean deleteStudent(int studentId) {
+        return getFacadeManger().deleteStudent(studentId);
+    }
+
+    public Student getStudentById(int studentId) {
+        logger.debug("Fetching student with ID: {}", studentId);
+        StudentValue backendStudent = getFacadeManger().getStudentById(studentId);
+        if (backendStudent == null) {
+            logger.debug("Found student: {}", backendStudent);
+        } else {
+            logger.warn("No student found for ID: {}", studentId);
+        }
+        return StudentConverter.convertToFrontendStudent(backendStudent);
+    }
+}

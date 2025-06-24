@@ -1,0 +1,260 @@
+/**
+ * This package contains Struts 2 Action classes for managing student operations
+ * such as search, add, update, and delete. These actions interact with the
+ * database layer and prepare data for UI rendering, especially for jqGrid integration.
+ * 
+ * The primary focus is to serve the Student Management System UI by coordinating
+ * requests and responses, using the Struts 2 framework.
+ */
+package com.studentsearch.action;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.SessionAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.opensymphony.xwork2.ModelDriven;
+import com.studentsearch.model.GridData;
+import com.studentsearch.model.Student;
+
+/**
+ * Action class for handling CRUD operations related to objects.
+ *
+ * This class acts as a controller in the Struts 2 MVC framework, handling user
+ * interactions for searching, listing, adding, updating, and deleting student
+ * records. It integrates with the database using JDBC and prepares data for
+ * jqGrid. Also implements to interact with session attributes for managing
+ * stateful user operations like storing search filters.
+ *
+ * @author Rose Mary Thomas
+ * @version 1.0
+ * @since 2025-05-30
+ */
+@SuppressWarnings("deprecation")
+public class StudentAction extends GenericAction implements ModelDriven<Student>, SessionAware {
+	private static final long serialVersionUID = 1L;
+	private static final Logger logger = LoggerFactory.getLogger(StudentAction.class);
+	private Student student;
+	private String actionType;// inthe model class
+	private GridData jqgridData = new GridData();
+	private static final String SEARCH_STUDENT_KEY = "searchStudent";
+
+	/**
+	 * Returns the jqGrid data object used in JSON responses.
+	 * 
+	 * @return the grid data
+	 */
+	public GridData getJqgridData() {
+		return jqgridData;
+	}
+
+	public void setJqgridData(GridData jqgridData) {
+		this.jqgridData = jqgridData;
+	}
+
+
+	@Override
+	public Student getModel() {
+		if (student == null) {
+			student = new Student();
+		}
+		return student;
+	}
+
+
+
+	/**
+	 * Navigates to the home page.
+	 * 
+	 * @return SUCCESS
+	 */
+	public String studenthome() {
+		return SUCCESS;
+	}
+
+	/**
+	 * Initializes student search form and clears previous search session.
+	 * 
+	 * @return SUCCESS
+	 */
+	public String studentSearch() {
+		
+//		ServletActionContext.getRequest().setAttribute("departmentList", departmentList);
+		ServletActionContext.getRequest().getSession().removeAttribute(SEARCH_STUDENT_KEY);
+		student = new Student();
+		student.initDepartmentList();
+		return SUCCESS;
+	}
+
+	/**
+	 * Initializes add-student form with department options.
+	 * 
+	 * @return SUCCESS
+	 */
+	public String studentAdd() {
+		student = new Student();
+		initDepartmentList();
+		ServletActionContext.getRequest().setAttribute("departmentList", departmentList);
+		return SUCCESS;
+	}
+
+	public Map<String, String> getDepartmentList() {
+		return departmentList;
+	}
+
+	public String getActionType() {
+		return actionType;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
+	}
+
+	public Student getStudent() {
+		return student;
+	}
+
+	public void setStudent(Student student) {
+		this.student = student;
+	}
+
+	/**
+	 * Saves the search parameters in session and clears the form.
+	 * 
+	 * @return SUCCESS
+	 */
+	public String search() {
+		logger.debug("Search action called with parameters: {}", student);
+		ServletActionContext.getRequest().getSession().setAttribute(SEARCH_STUDENT_KEY, student);
+		student = new Student();
+		return SUCCESS;
+	}
+
+	/**
+	 * Lists students matching search criteria and prepares jqGrid data.
+	 * 
+	 * @return SUCCESS or ERROR based on database result
+	 */
+	public String list() {
+		Student searchStudent = (Student) ServletActionContext.getRequest().getSession()
+				.getAttribute(SEARCH_STUDENT_KEY);
+		if (searchStudent == null) {
+			searchStudent = new Student();
+		}
+		logger.debug("List action called with parameters: {}", searchStudent);
+		List<Student> studentList = getStudentController().searchStudents(searchStudent);
+		jqgridData = convertToJqGridJson(studentList);
+
+		if (studentList == null) {
+			initDepartmentList();
+			addActionError("Failed to retrieve student data");
+			return ERROR;
+		}
+//		student.setStudentList(studentList);
+		jqgridData.setGridData(studentList);
+		jqgridData.setRecords(studentList.size());
+		int rowsPerPage = 10;
+		jqgridData.setTotal((int) Math.ceil((double) studentList.size() / rowsPerPage));
+		jqgridData.setPage(10);
+		getModel().setGridData(jqgridData);
+		logger.debug("Grid Data: {}", jqgridData);
+		return SUCCESS;
+	}
+
+	
+
+	/**
+	 * Creates or updates a student record in the database.
+	 * 
+	 * @return SUCCESS, ERROR or "list" depending on action type
+	 */
+	public String createStudent() {
+		boolean success = getStudentController().createStudent(student);
+        if (success) {
+            addActionMessage("Student saved successfully");
+            return "Save and Return".equals(actionType) ? "list" : SUCCESS;
+        } else {
+            addActionError("Failed to save student");
+            return ERROR;
+        }
+	}
+
+	/**
+	 * Loads student data for editing based on student ID.
+	 * 
+	 * @return SUCCESS or INPUT if student not found or DB error
+	 */
+	public String updateStudent() {
+        Student dbStudent = getStudentController().updateStudent(student);
+        if (dbStudent == null) {
+            initDepartmentList();
+            ServletActionContext.getRequest().setAttribute("departmentList", departmentList);
+            addActionError("Failed to update student");
+            return INPUT;
+        }
+        addActionMessage("Student updated successfully");
+        this.student = dbStudent;
+        return "Save and Return".equals(actionType) ? "list" : SUCCESS;
+    }
+	/**
+	 * Deletes a student by ID from the database.
+	 * 
+	 * @return SUCCESS or INPUT on failure
+	 */
+	public String deleteStudent() {
+		boolean deleted = getStudentController().deleteStudent(student.getStudentId());
+        if (!deleted) {
+            addActionError("Failed to delete student");
+            return INPUT;
+        }
+        return SUCCESS;
+	}
+	
+	public String editStudent() {
+	    logger.debug("editStudent called with studentId: {}", student.getStudentId());
+	    int studentId = student.getStudentId();
+	    if (studentId <= 0) {
+	        logger.warn("Invalid studentId: {}", studentId);
+	        initDepartmentList();
+	        ServletActionContext.getRequest().setAttribute("departmentList", departmentList);
+	        addActionError("Invalid student ID");
+	        return INPUT; // Return INPUT for invalid ID
+	    }
+	    Student dbStudent = getStudentController().getStudentById(studentId);
+	    if (dbStudent == null) {
+	        logger.warn("Student not found for ID: {}", studentId);
+	        initDepartmentList();
+	        ServletActionContext.getRequest().setAttribute("departmentList", departmentList);
+	        addActionError("Student not found");
+	        return ERROR;
+	    }
+	    student = dbStudent;
+	    initDepartmentList();
+	    ServletActionContext.getRequest().setAttribute("departmentList", departmentList);
+	    logger.debug("Loaded student: {}", student);
+	    return SUCCESS;
+	}
+	
+	
+	private GridData convertToJqGridJson(List<Student> studentList) {
+        GridData gridData = new GridData();
+        gridData.setGridData(studentList);
+        gridData.setRecords(studentList.size());
+        gridData.setTotal((int) Math.ceil((double) studentList.size() / 10));
+        gridData.setPage(1);
+        return gridData;
+    }
+
+	/**
+	 * Sets the session map. Required by SessionAware interface.
+	 */
+	@Override
+	public void setSession(Map<String, Object> arg0) {
+
+	}
+
+}

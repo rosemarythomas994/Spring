@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+<struts>
+<constant name="struts.custom.i18n.resources" value=" " />
+    <constant name="struts.i18n.encoding" value="UTF-8" />
+    <constant name="struts.locale" value="en" />
+
+    <package name="default" namespace="/" extends="struts-default,json-default">
+        <interceptors>
+            <interceptor name="navigationInterceptor" class="com.studentsearch.action.NavigationInterceptor"/>
+            <interceptor-stack name="defaultStack">
+                <interceptor-ref name="navigationInterceptor"/>
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+             <interceptor name="i18n" class="org.apache.struts2.interceptor.I18nInterceptor"/>
+        <interceptor-stack name="defaultStackWithI18n">
+            <interceptor-ref name="i18n"/>
+            <interceptor-ref name="defaultStack"/>
+        </interceptor-stack>
+            
+        </interceptors>
+        <default-interceptor-ref name="defaultStack"/>
+
+        <action name="studenthome" class="com.studentsearch.action.StudentAction" method="studenthome">
+            <result name="success">/index.jsp</result>
+        </action>
+        <action name="searchStudent" class="com.studentsearch.action.StudentAction" method="studentSearch">
+            <result name="success">/search.jsp</result>
+        </action>
+        <action name="list" class="com.studentsearch.action.StudentAction" method="list">
+            <result name="success" type="json">
+                <param name="root">gridData</param>
+            </result>
+            <result name="error">/error.jsp</result>
+        </action>
+        <action name="search" class="com.studentsearch.action.StudentAction" method="search">
+            <result name="success" >/list.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+        <action name="addStudent" class="com.studentsearch.action.StudentAction" method="studentAdd">
+            <result name="success">/add.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+        <action name="save" class="com.studentsearch.action.StudentAction" method="createStudent">
+            <result name="success" type="redirectAction">addStudent</result>
+            <result name="list" type="redirectAction">search</result>
+            <result name="input">/add.jsp</result>
+           <result name="error">/error.jsp</result>
+        </action>
+        <action name="edit" class="com.studentsearch.action.StudentAction" method="editStudent">
+            <result name="success">/add.jsp</result>
+            <result name="error">/error.jsp</result>
+            <result name="input">/add.jsp</result>
+        </action>
+        <action name="delete" class="com.studentsearch.action.StudentAction" method="deleteStudent">
+            <result name="success" type="redirectAction">search</result>
+            <result name="error">/error.jsp</result>
+        </action>
+        
+    </package>
+</struts>

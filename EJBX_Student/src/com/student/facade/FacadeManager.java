@@ -1,0 +1,13 @@
+package com.student.facade;
+
+import java.util.List;
+
+import com.student.model.StudentValue;
+
+public interface FacadeManager {
+    public List<StudentValue> searchStudents(StudentValue searchStudent);
+    public boolean createStudent(StudentValue student);
+    public boolean updateStudent(StudentValue student);
+    public StudentValue getStudentById(int studentId);
+    public boolean deleteStudent(int studentId);
+}

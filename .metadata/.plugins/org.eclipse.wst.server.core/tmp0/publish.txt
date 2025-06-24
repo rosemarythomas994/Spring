@@ -1,0 +1,4 @@
+#Tomcat publish data
+#Tue Jun 10 13:36:07 IST 2025
+org.eclipse.jst.jee.server\:/binary\:E\:\\struts\ department\\studentsearch\\src\\main\\webapp\\WEB-INF\\lib\\spring-web-5.3.32.jar=C\:\\Users\\Rosemary\\Downloads\\install\\apache-tomcat-9.0.104\\webapps\\studentmanagementsystemusingSpring\\WEB-INF\\lib\\spring-web-5.3.32.jar
+org.eclipse.jst.jee.server\:studentmanagementsystemusingSpring=C\:\\Users\\Rosemary\\Downloads\\install\\apache-tomcat-9.0.104\\webapps\\studentmanagementsystemusingSpring

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="org.apache.struts2.interceptor.ApplicationAware"/>
+    <fullyQualifiedTypeName name="org.apache.struts2.interceptor.CookiesAware"/>
+    <fullyQualifiedTypeName name="java.lang.Override"/>
+    <fullyQualifiedTypeName name="com.student.facade.Facadeanager"/>
+    <fullyQualifiedTypeName name="jakarta.servlet.http.HttpSession"/>
+    <fullyQualifiedTypeName name="javax.servlet.http.HttpSession"/>
+    <fullyQualifiedTypeName name="org.apache.struts2.interceptor.SessionAware"/>
+    <fullyQualifiedTypeName name="org.apache.struts2.action.SessionAware"/>
+    <fullyQualifiedTypeName name="com.studentsearch.constants.StudentManagmentConstants"/>
+    <fullyQualifiedTypeName name="com.student.model.Student_Value"/>
+    <fullyQualifiedTypeName name="java.util.logging.Logger"/>
+    <fullyQualifiedTypeName name="java.lang.System.Logger"/>
+    <fullyQualifiedTypeName name="freemarker.core.ParseException"/>
+    <fullyQualifiedTypeName name="org.json.simple.parser.ParseException"/>
+    <fullyQualifiedTypeName name="java.lang.RuntimeException"/>
+    <fullyQualifiedTypeName name="com.student.model.StudentValue"/>
+</qualifiedTypeNameHistroy>

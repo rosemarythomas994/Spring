@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Define DBConnection bean -->
+    <bean id="dbConnection" class="com.student.util.DBConnection" />
+
+    <!-- Define FacadeManagerBean -->
+    <bean id="facadeManager" class="com.student.facade.FacadeManagerBean">
+        <property name="dbConnection" ref="dbConnection" />
+    </bean>
+
+    <!-- Define DateConverter bean if used in frontend -->
+    <bean id="dateConverter" class="com.student.util.DateConverter" />
+</beans>

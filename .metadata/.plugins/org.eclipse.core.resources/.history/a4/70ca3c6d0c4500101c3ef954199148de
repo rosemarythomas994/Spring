@@ -1,0 +1,6 @@
+package com.student.servicelocator;
+
+public class ServiceLocator {
+	private static ServiceLocator serviceLocator = null;
+	private Map <String, ClassPathXmlApplicationContext> contextData = new HashMap<>();
+}

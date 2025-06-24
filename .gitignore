@@ -1,0 +1,25 @@
+# Ignore Visual Studio folders
+.vs/
+*.user
+*.suo
+
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore build results
+*.exe
+*.dll
+*.pdb
+
+# Ignore user-specific files
+*.userprefs
+
+# Ignore Rider/JetBrains settings
+.idea/
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+*.metadata
+*.sonarlint

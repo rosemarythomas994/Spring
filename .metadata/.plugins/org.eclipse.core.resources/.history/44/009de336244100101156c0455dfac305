@@ -1,0 +1,228 @@
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title><s:property value="student.studentId > 0 ? 'Edit Student' : 'Add Student'" /></title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+.container {
+    margin: 20px;
+    max-width: 1200px;
+}
+.errorMessage {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+.successMessage {
+    color: green;
+}
+</style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="index.jsp">DEMO-US</a></li>
+                <li class="nav-item dropdown">
+                    <button class="nav-link dropdown-toggle btn btn-link" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">Student Operations</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="searchStudent">Search Student</a></li>
+                        <li><a class="dropdown-item" href="addStudent">Add Student</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="navbar-nav d-flex align-items-center gap-3">
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-house-chimney mr-5"></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-gauge mr-5"></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-bell mr-5"></i></a></li>
+                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#"><i class="fa-solid fa-wrench mr-5"><ul class="dropdown-menu"></ul></i></a></li>
+                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#"><i class="fa-solid fa-star mr-5"><ul class="dropdown-menu"></ul></i></a></li>
+                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#"><i class="fa-solid fa-circle-question mr-5"><ul class="dropdown-menu"></ul></i></a></li>
+                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#"><i class="fa-solid fa-book mr-5"><ul class="dropdown-menu"></ul></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-envelope mr-5"></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-arrow-right-from-bracket mr-5"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="d-flex justify-content-center">
+        <div class="container mt-2 bg-light" style="max-width: 1200px;">
+            <div class="container-fluid p-3 bg-light text-center">
+                <h2><s:property value="student.studentId > 0 ? 'Edit Student' : 'Add Student'" /></h2>
+            </div>
+            <div class="container mt-5 bg-light">
+                <s:form action="save" cssClass="row g-3 needs-validation" method="post" theme="simple" onsubmit="return validateForm()">
+                    <div id="alertContainer"></div>
+                    <div class="mb-3 text-left">
+                        <s:submit name="actionType" value="Save" cssClass="btn btn-primary" />
+                        <s:submit name="actionType" value="Save and Return" cssClass="btn btn-primary" />
+                        <a href="searchStudent" class="btn btn-secondary">Back</a>
+                    </div>
+
+                    <s:hidden name="fromPage" value="%{fromPage}" />
+                    <s:hidden name="studentId" />
+
+                    <div class="mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <label for="name" class="form-label text-md-end">Name:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <s:textfield name="name" id="name" placeholder="Enter Name" cssClass="form-control" maxlength="100" required="true" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <label for="department" class="form-label text-md-end">Department:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <s:if test="departmentList != null">
+                                    <s:select name="student.department" id="department" list="departmentList" cssClass="form-select" required="true" />
+                                </s:if>
+                                <s:else>
+                                    <select name="student.department" id="department" class="form-select" disabled>
+                                        <option value="">Error loading departments</option>
+                                    </select>
+                                </s:else>
+                                <s:fielderror fieldName="student.department" cssClass="errorMessage" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <label for="dob" class="form-label">Date of Birth:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <fmt:formatDate value="${student.dob}" pattern="yyyy-MM-dd" var="formattedDob" />
+                                <input type="date" id="dob" name="dob" value="${formattedDob}" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <label for="doa" class="form-label">Date of Admission:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <fmt:formatDate value="${student.doa}" pattern="yyyy-MM-dd" var="formattedDoa" />
+                                <input type="date" id="doa" name="doa" value="${formattedDoa}" class="form-control" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row align-items-start">
+                            <div class="col-md-3">
+                                <label for="gender" class="form-label text-md-end">Gender:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="student.gender" id="genderMale" value="Male"
+                                        <s:if test="student.gender == 'Male'">checked</s:if> required />
+                                    <label class="form-check-label" for="genderMale">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="student.gender" id="genderFemale" value="Female"
+                                        <s:if test="student.gender == 'Female'">checked</s:if> />
+                                    <label class="form-check-label" for="genderFemale">Female</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="student.gender" id="genderOther" value="Other"
+                                        <s:if test="student.gender == 'Other'">checked</s:if> />
+                                    <label class="form-check-label" for="genderOther">Other</label>
+                                </div>
+                                <s:fielderror fieldName="student.gender" cssClass="errorMessage" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row align-items-start">
+                            <div class="col-md-3">
+                                <label for="address" class="form-label text-md-end">Address:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <s:textarea name="address" id="address" rows="4" cssClass="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <s:actionerror cssClass="text-danger" />
+                </s:form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function validateForm() {
+            let isValid = true;
+            const errors = [];
+
+            // Name validation
+            const name = document.getElementById('name').value.trim();
+            if (!name) {
+                errors.push('Name is required.');
+            } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                errors.push('Name must contain only letters and spaces.');
+            }
+
+            // Department validation
+            const department = document.getElementById('department').value;
+            if (!department) {
+                errors.push('Please select a department.');
+            }
+
+            // Date of Birth validation
+            const dob = document.getElementById('dob').value;
+            const today = new Date();
+            const dobDate = new Date(dob);
+            if (!dob) {
+                errors.push('Date of Birth is required.');
+            } else if (dobDate > today) {
+                errors.push('Date of Birth cannot be in the future.');
+            }
+
+            // Date of Admission validation
+            const doa = document.getElementById('doa').value;
+            const doaDate = new Date(doa);
+            if (!doa) {
+                errors.push('Date of Admission is required.');
+            } else if (doaDate < dobDate) {
+                errors.push('Date of Admission cannot be before Date of Birth.');
+            }
+
+            // Gender validation
+            const gender = document.querySelector('input[name="student.gender"]:checked');
+            if (!gender) {
+                errors.push('Please select a gender.');
+            }
+
+            // Address validation (optional, required as per your previous request)
+            const address = document.getElementById('address').value.trim();
+            if (!address) {
+                errors.push('Address is required.');
+            }
+
+            // Display errors in an alert if any
+            if (errors.length > 0) {
+                alert('Please fix the following errors:\n\n' + errors.join('\n'));
+                isValid = false;
+            }
+
+            return isValid;
+        }
+    </script>
+</body>
+</html>

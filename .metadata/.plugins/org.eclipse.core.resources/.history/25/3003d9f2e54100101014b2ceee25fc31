@@ -1,0 +1,66 @@
+# Labels
+label.welcome=Welcome to Employee Management
+label.manageEmployees=Manage your employees efficiently with easy-to-use tools.
+label.demous=Demo Us
+label.home=Home
+label.features=Features
+label.search=Search
+label.addEmployee=Add Employee
+label.editEmployee=Edit Employee
+label.logout=Logout
+label.searchemployee= Search Employee
+label.settings= Settings
+label.user= User
+label.notification= Notification
+label.message= Message
+
+# Employee Information
+label.name=Name
+label.id=ID
+label.department=Department
+label.gender=Gender
+label.address=Address
+label.date= Date of Joining
+
+# Gender
+label.gender.male=Male
+label.gender.female=Female
+label.gender.other=Other
+
+# Buttons
+button.save=Save
+button.update=Update
+button.delete=Delete
+button.cancel=Cancel
+button.reset=Reset
+button.back=Back
+button.submit=Submit
+
+# Errors and Messages
+error.noResults=No employees found matching your criteria.
+message.addSuccess=Employee added successfully.
+error.addFailure=Failed to add employee.
+message.editSuccess=Employee edited successfully.
+error.editFailure=Failed to edit employee.
+message.deleteSuccess=Employee deleted successfully.
+error.deleteFailure=Failed to delete employee.
+message.updateSuccess=Employee updated successfully.
+error.updateFailure=Failed to update employee.
+
+# Grid Labels
+grid.title=Employee List
+grid.column.name=Name
+grid.column.id=ID
+grid.column.department=Department
+grid.column.gender=Gender
+grid.column.address=Address
+
+# Validation Messages
+validation.required=This field is required.
+validation.invalid=The provided information is invalid.
+validation.minLength=Minimum length of {1} is required for {0}.
+validation.maxLength=Maximum length of {1} is allowed for {0}.
+
+# Database and General Errors
+error.database=Database Error: {0}
+error.unexpected=An unexpected error occurred: {0}

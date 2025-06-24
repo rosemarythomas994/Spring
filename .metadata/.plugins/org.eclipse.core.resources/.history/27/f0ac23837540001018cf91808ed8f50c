@@ -1,0 +1,51 @@
+/**
+ * This package contains utility classes used across the Student Management System,
+ * such as custom type converters for data binding and formatting.
+ */
+package com.student.util;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.opensymphony.xwork2.conversion.TypeConverter;
+import com.opensymphony.xwork2.conversion.impl.DefaultTypeConverter;
+/**
+ * DateConverter is a custom type converter for Struts 2 that handles
+ * the conversion of String} date values from form inputs into java.util.Date}
+ * objects using the "MM/dd/yyyy" format.
+ *
+ * This converter is useful for automatically parsing form inputs like DOB or DOA
+ * when binding to model classes.
+ * Example format accepted: <b>03/30/2025</b>
+ *
+ * @author Rose Mary Thomas
+ * @version 1.0
+ * @since 2025-05-30
+ */
+public class DateConverter extends DefaultTypeConverter implements TypeConverter {
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy");
+
+    /**
+     * Converts a String array to a Date object if the target type is Date
+     * and the input string matches the format MM/dd/yyyy.
+     *
+     * @param value   the input value from the form (expected to be a String array)
+     * @param toType  the target type to convert to (expected to be Date.class)
+     * @return        the parsed Date object or null if conversion fails
+     * @throws RuntimeException if the input string is in an invalid date format
+     */
+    @Override
+    public Object convertValue( Object value, Class toType) {
+        if (toType == Date.class && value instanceof String[]) {
+            String[] params = (String[]) value;
+            if (params.length > 0 && params[0] != null && !params[0].isEmpty()) {
+                try {
+                    return DATE_FORMAT.parse(params[0]);
+                } catch (Exception e) {
+                    throw new RuntimeException("Invalid date format for " + params[0], e);
+                }
+            }
+        }
+        return null;
+    }
+}

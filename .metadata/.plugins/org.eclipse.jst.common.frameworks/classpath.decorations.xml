@@ -1,0 +1,17 @@
+<classpath>
+  <container id="studentsearch!org.eclipse.jst.j2ee.internal.web.container">
+    <entry id="E:/struts department/studentsearch/src/main/webapp/WEB-INF/lib/struts2-core-6.7.4.jar">
+      <source-attachment-path>C:/Users/Rosemary/Downloads/struts-6.7.4-src.zip</source-attachment-path>
+    </entry>
+  </container>
+  <container id="studentmanagementsystem!org.eclipse.jst.j2ee.internal.web.container">
+    <entry id="E:/struts department/studentsearch/src/main/webapp/WEB-INF/lib/student.jar">
+      <source-attachment-path>/EJBX_Student</source-attachment-path>
+    </entry>
+  </container>
+  <container id="studentmanagementsystemusingSpring!org.eclipse.jst.j2ee.internal.web.container">
+    <entry id="E:/struts department/studentsearch/src/main/webapp/WEB-INF/lib/student.jar">
+      <source-attachment-path>/EJBX_Student</source-attachment-path>
+    </entry>
+  </container>
+</classpath>

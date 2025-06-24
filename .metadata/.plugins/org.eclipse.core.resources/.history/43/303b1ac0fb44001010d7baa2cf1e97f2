@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+        
+        
+        
+        
+        
+<struts>
+<constant name="struts.custom.i18n.resources" value="package" />
+			<package name="default" namespace="/" extends="struts-default">
+			
+			    <interceptors>
+        <interceptor name="i18n" class="org.apache.struts2.interceptor.I18nInterceptor"/>
+        <interceptor-stack name="defaultStackWithI18n">
+            <interceptor-ref name="i18n"/>
+            <interceptor-ref name="defaultStack"/>
+        </interceptor-stack>
+    </interceptors>
+
+    <default-interceptor-ref name="defaultStackWithI18n" />
+			
+		<action name="search" class="action.EmployeeAction" method="createSearch">
+			<result name="success">/jsp/searchemployee.jsp</result>
+			<result name="input">/jsp/searchemployee.jsp</result>
+			<result name="error">/jsp/error.jsp</result>
+		</action>
+		
+		<action name="searchEmployee" class="action.EmployeeAction" method="searchEmployees">
+			<result name="success">/jsp/searchresult.jsp</result>
+			<result name="error">/jsp/error.jsp</result>
+		</action>
+			
+		<action name="addEmployee" class="action.EmployeeAction" method="addEmployee">
+			<result name="success" type="redirectAction">searchEmployee</result>
+			<result name="input">/jsp/addemployee.jsp</result>
+			<result name="error">/jsp/error.jsp</result>
+		</action>
+		
+		<action name="editEmployee" class="action.EmployeeAction" method="editEmployee">
+			<result name="success">/jsp/editemployee.jsp</result>
+			<result name="error">/jsp/error.jsp</result>
+		</action>
+	
+		<action name="editEmployeeDetails" class="action.EmployeeAction" method="updateEmployee">
+			<interceptor-ref name="defaultStack"/>
+			<result name="success" type="redirectAction">searchEmployee</result>
+			<result name="error">/jsp/error.jsp</result>
+		</action>
+		<action name="deleteEmployee" class="action.EmployeeAction" method="deleteEmployee">
+			<interceptor-ref name="defaultStack"/>
+			<result name="success" type="redirectAction">searchEmployee</result>
+			<result name="error">/jsp/error.jsp</result>
+		</action>
+	</package>
+</struts>

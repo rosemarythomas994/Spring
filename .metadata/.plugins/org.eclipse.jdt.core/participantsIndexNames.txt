@@ -1,0 +1,9 @@
+INDEX VERSION 1.134
+E:\frontend and backend struts\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1658164742.index
+\studentmanagementsystem\src\main\java
+E:\grid struts\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\750851876.index
+\studentsearch\src\main\java
+E:\springstudent\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\297778550.index
+\studentmanagementsystemusingSpring\src\main\java
+E:\struts department\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\750851876.index
+\studentsearch\src\main\java

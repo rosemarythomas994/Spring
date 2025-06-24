@@ -1,0 +1,24 @@
+package com.student.servicelocator;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class ServiceLocator {
+	private static ServiceLocator serviceLocator = null;
+	private Map <String, ClassPathXmlApplicationContext> contextData = new HashMap<>();
+	
+	private ServiceLocator()
+	{
+		
+	}
+	
+	public static ServiceLocator getInstance()
+	{
+		if(serviceLocator == null)
+		{
+			serviceLocator = new ServiceLocator();
+		}
+		return serviceLocator;
+	}
+	
+}

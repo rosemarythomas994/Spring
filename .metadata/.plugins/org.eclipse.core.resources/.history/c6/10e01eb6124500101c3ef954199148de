@@ -1,0 +1,52 @@
+package com.student.servicelocator;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class ServiceLocator {
+	private static ServiceLocator serviceLocator = null;
+	private Map <String, ClassPathXmlApplicationContext> springContaxt = new HashMap<>();
+	
+	private ServiceLocator()
+	{
+			
+	}
+	
+	public static ServiceLocator getInstance()
+	{
+		if(serviceLocator == null)
+		{
+			serviceLocator = new ServiceLocator();
+		}
+		return serviceLocator;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getFacadeManager(Class<T> facadeManagerClass)
+	{
+		String className = facadeManagerClass.getSimpleName();
+
+		if("FacadeManager".equals(className))
+		{
+			return (T) getFacadeManager();
+		}
+		return null;
+	}
+
+	
+	private Object getFacadeManager() {
+		final String CONTEXT_KEY = "STUDENTS";
+		ClassPathXmlApplicationContext context = null;
+		if(!springContaxt.containsKey(CONTEXT_KEY))
+		{
+			context = new ClassPathXmlApplicationContext("applicationContext.xml");
+			springContaxt.put(CONTEXT_KEY, context);
+		}
+		else {
+			context = springContaxt.get(CONTEXT_KEY);
+		}
+		return context.getBean("facadeManger");
+	}
+}

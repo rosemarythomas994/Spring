@@ -1,0 +1,269 @@
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title><s:property value="student.studentId > 0 ? 'Edit Student' : 'Add Student'" /></title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+.container {
+    margin: 20px;
+    max-width: 1200px;
+}
+.errorMessage {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+.successMessage {
+    color: green;
+}
+.form-error {
+    color: red;
+    font-size: 0.9em;
+    display: none;
+}
+</style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="index.jsp">DEMO-US</a></li>
+                <li class="nav-item dropdown">
+                    <button class="nav-link dropdown-toggle btn btn-link" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">Student Operations</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="searchStudent">Search Student</a></li>
+                        <li><a class="dropdown-item" href="addStudent">Add Student</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="navbar-nav d-flex align-items-center gap-3">
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-house-chimney mr-5"></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-gauge mr-5"></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-bell mr-5"></i></a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="wrenchDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-wrench mr-5"></i>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="wrenchDropdown">
+                        <!-- Add items if needed -->
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="starDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-star mr-5"></i>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="starDropdown">
+                        <!-- Add items if needed -->
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="questionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-circle-question mr-5"></i>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="questionDropdown">
+                        <!-- Add items if needed -->
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="bookDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-book mr-5"></i>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="bookDropdown">
+                        <!-- Add items if needed -->
+                    </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-envelope mr-5"></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-arrow-right-from-bracket mr-5"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="d-flex justify-content-center">
+        <div class="container mt-2 bg-light" style="max-width: 1200px;">
+            <div class="container-fluid p-3 bg-light text-center">
+                <h2><s:property value="student.studentId > 0 ? 'Edit Student' : 'Add Student'" /></h2>
+            </div>
+            <div class="container mt-5 bg-light">
+                <s:form action="save" cssClass="row g-3 needs-validation" method="post" theme="simple" onsubmit="return validateForm()">
+                    <div class="mb-3 text-left">
+                        <s:submit name="student.actionType" value="Save" cssClass="btn btn-primary" />
+                        <s:submit name="student.actionType" value="Save and Return" cssClass="btn btn-primary" />
+                        <a href="searchStudent" class="btn btn-secondary">Back</a>
+                    </div>
+                    <s:hidden name="fromPage" value="%{fromPage}" />
+                    <s:hidden name="student.studentId" />
+
+                    <div class="mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <label for="name" class="form-label text-md-end">Name:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <s:textfield name="studentValue.name" id="name" placeholder="Enter Name" cssClass="form-control" maxlength="100" required="true" />
+                                <div id="nameError" class="form-error"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <label for="department" class="form-label text-md-end">Department:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <s:select name="studentValue.department" id="department"
+                                          list="#request.departmentList" value="%{studentValue.department}"
+                                          cssClass="form-control" required="true" />
+                                <s:if test="#request.departmentList == null || #request.departmentList.isEmpty()">
+                                    <div class="errorMessage">Error loading departments</div>
+                                </s:if>
+                                <div id="departmentError" class="form-error"></div>
+                                <s:fielderror fieldName="studentValue.department" cssClass="errorMessage" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <label for="dob" class="form-label">Date of Birth:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <fmt:formatDate value="${studentValue.dob}" pattern="yyyy-MM-dd" var="formattedDob" />
+                                <input type="date" id="dob" name="studentValue.dob" value="${formattedDob}" class="form-control" required />
+                                <div id="dobError" class="form-error"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <label for="doa" class="form-label">Date of Admission:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <fmt:formatDate value="${studentValue.doa}" pattern="yyyy-MM-dd" var="formattedDoa" />
+                                <input type="date" id="doa" name="studentValue.doa" value="${formattedDoa}" class="form-control" required />
+                                <div id="doaError" class="form-error"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row align-items-start">
+                            <div class="col-md-3">
+                                <label for="gender" class="form-label text-md-end">Gender:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="studentValue.gender" id="genderMale" value="Male"
+                                           <s:if test="studentValue.gender == 'Male'">checked</s:if> required />
+                                    <label class="form-check-label" for="genderMale">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="studentValue.gender" id="genderFemale" value="Female"
+                                           <s:if test="studentValue.gender == 'Female'">checked</s:if> />
+                                    <label class="form-check-label" for="genderFemale">Female</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="studentValue.gender" id="genderOther" value="Other"
+                                           <s:if test="student.gender == 'Other'">checked</s:if> />
+                                    <label class="form-check-label" for="genderOther">Other</label>
+                                </div>
+                                <div id="genderError" class="form-error"></div>
+                                <s:fielderror fieldName="student.gender" cssClass="errorMessage" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="row align-items-start">
+                            <div class="col-md-3">
+                                <label for="address" class="form-label text-md-end">Address:</label>
+                            </div>
+                            <div class="col-md-8">
+                                <s:textarea name="student.address" id="address" rows="4" cssClass="form-control" />
+                                <div id="addressError" class="form-error"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <s:actionerror cssClass="text-danger" />
+                </s:form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function validateForm() {
+            let isValid = true;
+            document.querySelectorAll('.form-error').forEach(error => error.style.display = 'none');
+
+            const name = document.getElementById('name').value.trim();
+            if (!name) {
+                document.getElementById('nameError').textContent = 'Name is required.';
+                document.getElementById('nameError').style.display = 'block';
+                isValid = false;
+            } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+                document.getElementById('nameError').textContent = 'Name must contain only letters and spaces.';
+                document.getElementById('nameError').style.display = 'block';
+                isValid = false;
+            }
+
+            const department = document.getElementById('department').value;
+            if (!department) {
+                document.getElementById('departmentError').textContent = 'Please select a department.';
+                document.getElementById('departmentError').style.display = 'block';
+                isValid = false;
+            }
+
+            const dob = document.getElementById('dob').value;
+            const today = new Date();
+            const dobDate = new Date(dob);
+            if (!dob) {
+                document.getElementById('dobError').textContent = 'Date of Birth is required.';
+                document.getElementById('dobError').style.display = 'block';
+                isValid = false;
+            } else if (dobDate > today) {
+                document.getElementById('dobError').textContent = 'Date of Birth cannot be in the future.';
+                document.getElementById('dobError').style.display = 'block';
+                isValid = false;
+            }
+
+            const doa = document.getElementById('doa').value;
+            const doaDate = new Date(doa);
+            if (!doa) {
+                document.getElementById('doaError').textContent = 'Date of Admission is required.';
+                document.getElementById('doaError').style.display = 'block';
+                isValid = false;
+            } else if (doaDate < dobDate) {
+                document.getElementById('doaError').textContent = 'Date of Admission cannot be before Date of Birth.';
+                document.getElementById('doaError').style.display = 'block';
+                isValid = false;
+            }
+
+            const gender = document.querySelector('input[name="student.gender"]:checked');
+            if (!gender) {
+                document.getElementById('genderError').textContent = 'Please select a gender.';
+                document.getElementById('genderError').style.display = 'block';
+                isValid = false;
+            }
+
+            const address = document.getElementById('address').value.trim();
+            if (!address) {
+                document.getElementById('addressError').textContent = 'Address is required.';
+                document.getElementById('addressError').style.display = 'block';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+    </script>
+</body>
+</html>

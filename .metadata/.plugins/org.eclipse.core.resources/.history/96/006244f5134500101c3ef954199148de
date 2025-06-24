@@ -1,0 +1,49 @@
+package com.studentsearch.util;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.student.model.StudentValue;
+import com.studentsearch.model.Student;
+
+public class StudentConverter {
+    public static StudentValue convertToBackendStudent(Student modelStudent) {
+        if (modelStudent == null) return null;
+        StudentValue backendStudent = new StudentValue();
+        backendStudent.setStudentId(modelStudent.getStudentId());
+        backendStudent.setName(modelStudent.getName());
+        backendStudent.setDepartment(modelStudent.getDepartment());
+        backendStudent.setDob(modelStudent.getDob() != null ? new Date(modelStudent.getDob().getTime()) : null);
+        backendStudent.setDoa(modelStudent.getDoa() != null ? new Date(modelStudent.getDoa().getTime()) : null);
+        backendStudent.setGender(modelStudent.getGender());
+        backendStudent.setAddress(modelStudent.getAddress());
+        return backendStudent;
+    }
+
+    public static Student convertToFrontendStudent(StudentValue backendStudent) {
+        if (backendStudent == null) return null;
+        Student modelStudent = new Student();
+        modelStudent.setStudentId(backendStudent.getStudentId());
+        modelStudent.setName(backendStudent.getName());
+        modelStudent.setDepartment(backendStudent.getDepartment());
+        modelStudent.setDob(backendStudent.getDob() != null ? new Date(backendStudent.getDob().getTime()) : null);
+        modelStudent.setDoa(backendStudent.getDoa() != null ? new Date(backendStudent.getDoa().getTime()) : null);
+        modelStudent.setGender(backendStudent.getGender());
+        modelStudent.setAddress(backendStudent.getAddress());
+        return modelStudent;
+    }
+
+    public static List<Student> convertToFrontendStudentList(List<StudentValue> backendStudentList) {
+        List<Student> modelStudentList = new ArrayList<>();
+        if (backendStudentList != null) {
+            for (StudentValue backendStudent : backendStudentList) {
+                Student student = convertToFrontendStudent(backendStudent);
+                if (student != null) {
+                    modelStudentList.add(student);
+                }
+            }
+        }
+        return modelStudentList;
+    }
+}

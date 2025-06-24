@@ -1,0 +1,194 @@
+package com.student.facade;
+
+import static com.student.constants.StudentManagmentConstants.COL_ADDRESS;
+import static com.student.constants.StudentManagmentConstants.COL_DEPARTMENT;
+import static com.student.constants.StudentManagmentConstants.COL_DOA;
+import static com.student.constants.StudentManagmentConstants.COL_DOB;
+import static com.student.constants.StudentManagmentConstants.COL_GENDER;
+import static com.student.constants.StudentManagmentConstants.COL_NAME;
+import static com.student.constants.StudentManagmentConstants.COL_STUDENT_ID;
+import static com.student.constants.StudentManagmentConstants.DELETE_STUDENT;
+import static com.student.constants.StudentManagmentConstants.INSERT_STUDENT;
+import static com.student.constants.StudentManagmentConstants.SELECT_ALL_STUDENT;
+import static com.student.constants.StudentManagmentConstants.SELECT_STUDENT_BY_ID;
+import static com.student.constants.StudentManagmentConstants.UPDATE_STUDENT;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.student.model.Student_Value;
+import com.student.util.DBConnection;
+
+
+
+public class FacadeManagerBean implements Facadeanager {
+	private static final long serialVersionUID = 1L;
+	private Student_Value student;
+	private static final String SEARCH_STUDENT_KEY = "searchStudent";
+	private transient DBConnection dbConnection = new DBConnection();
+	private static final String DB_ERROR = "Database error: ";
+	private static final String SQL_ERROR = "SQLException: ";
+
+	   public void setStudent(Student_Value student) {
+	        this.student = student;
+	    }
+	    public Student_Value getStudent() {
+	        return this.student;
+	    }
+
+	/**
+	 * Retrieves student data based on search filters and builds result list.
+	 *
+	 * @param searchStudent student filter object
+	 * @return list of matching students or null if DB error
+	 */
+	    @Override
+		public List<Student_Value> searchStudents(Student_Value searchStudent) {
+	        List<Student_Value> studentList = new ArrayList<>();
+	        StringBuilder query = new StringBuilder(SELECT_ALL_STUDENT);
+	        List<Object> params = new ArrayList<>();
+
+	        if (searchStudent.getStudentId() > 0) {
+	            query.append(" AND student_id = ?");
+	            params.add(searchStudent.getStudentId());
+	        }
+	        if (searchStudent.getName() != null && !searchStudent.getName().trim().isEmpty()) {
+	            query.append(" AND LOWER(name) LIKE LOWER(?)");
+	            params.add("%" + searchStudent.getName().trim() + "%");
+	        }
+	        if (searchStudent.getDepartment() != null && !searchStudent.getDepartment().trim().isEmpty()) {
+	            query.append(" AND LOWER(department) LIKE LOWER(?)");
+	            params.add("%" + searchStudent.getDepartment().trim() + "%");
+	        }
+	        if (searchStudent.getDob() != null) {
+	            query.append(" AND dob = ?");
+	            params.add(new java.sql.Date(searchStudent.getDob().getTime()));
+	        }
+	        if (searchStudent.getDoa() != null) {
+	            query.append(" AND doa = ?");
+	            params.add(new java.sql.Date(searchStudent.getDoa().getTime()));
+	        }
+	        if (searchStudent.getGender() != null && !searchStudent.getGender().trim().isEmpty()) {
+	            query.append(" AND gender = ?");
+	            params.add(searchStudent.getGender().trim());
+	        }
+
+	        try (Connection conn = dbConnection.getConnection();
+	             PreparedStatement stmt = conn.prepareStatement(query.toString())) {
+
+	            for (int i = 0; i < params.size(); i++) {
+	                stmt.setObject(i + 1, params.get(i));
+	            }
+
+	            try (ResultSet rs = stmt.executeQuery()) {
+	                while (rs.next()) {
+	                	Student_Value s = new Student_Value();
+	                    s.setStudentId(rs.getInt(COL_STUDENT_ID));
+	                    s.setName(rs.getString(COL_NAME));
+	                    s.setDepartment(rs.getString(COL_DEPARTMENT));
+	                    s.setDob(rs.getDate(COL_DOB));
+	                    s.setDoa(rs.getDate(COL_DOA));
+	                    s.setGender(rs.getString(COL_GENDER));
+	                    s.setAddress(rs.getString(COL_ADDRESS));
+	                    studentList.add(s);
+	                }
+	            }
+
+	        } catch (SQLException e) {
+	        }
+	        return studentList;
+	    }
+
+	/**
+	 * Creates or updates a student record in the database.
+	 * 
+	 * @return SUCCESS, ERROR or "list" depending on action type
+	 */
+		@Override
+	    public boolean createStudent(Student_Value student) {
+	        try (Connection conn = dbConnection.getConnection();
+	             PreparedStatement stmt = conn.prepareStatement(INSERT_STUDENT)) {
+	            stmt.setString(1, student.getName());
+	            stmt.setString(2, student.getDepartment());
+	            stmt.setDate(3, student.getDob() != null ? new java.sql.Date(student.getDob().getTime()) : null);
+	            stmt.setDate(4, student.getDoa() != null ? new java.sql.Date(student.getDoa().getTime()) : null);
+	            stmt.setString(5, student.getGender());
+	            stmt.setString(6, student.getAddress());
+	            stmt.executeUpdate();
+	            return true;
+	        } catch (SQLException e) {
+	        	 System.out.println("Error in deleteStudent: {}"+ e.getMessage()+ e);
+	        	 return false;
+	        }
+	    }
+
+	/**
+	 * Loads student data for editing based on student ID.
+	 * 
+	 * @return SUCCESS or INPUT if student not found or DB error
+	 */
+		@Override
+	    public boolean updateStudent(Student_Value student) {
+	        try (Connection conn = dbConnection.getConnection();
+	             PreparedStatement stmt = conn.prepareStatement(UPDATE_STUDENT)) {
+	            stmt.setString(1, student.getName());
+	            stmt.setString(2, student.getDepartment());
+	            stmt.setDate(3, student.getDob() != null ? new java.sql.Date(student.getDob().getTime()) : null);
+	            stmt.setDate(4, student.getDoa() != null ? new java.sql.Date(student.getDoa().getTime()) : null);
+	            stmt.setString(5, student.getGender());
+	            stmt.setString(6, student.getAddress());
+	            stmt.setInt(7, student.getStudentId());
+	            int rows = stmt.executeUpdate();
+	            return rows > 0;
+	        } catch (SQLException e) {
+	        	 System.out.println("Error in deleteStudent: {}"+ e.getMessage()+ e);	            return false;
+	        }
+	    }
+
+		
+		@Override
+	    public Student_Value getStudentById(int studentId) {
+	        try (Connection conn = dbConnection.getConnection();
+	             PreparedStatement stmt = conn.prepareStatement(SELECT_STUDENT_BY_ID)) {
+	            stmt.setInt(1, studentId);
+	            try (ResultSet rs = stmt.executeQuery()) {
+	                if (rs.next()) {
+	                    Student_Value student = new Student_Value();
+	                    student.setStudentId(studentId);
+	                    student.setName(rs.getString(COL_NAME));
+	                    student.setDepartment(rs.getString(COL_DEPARTMENT));
+	                    student.setDob(rs.getDate(COL_DOB));
+	                    student.setDoa(rs.getDate(COL_DOA));
+	                    student.setGender(rs.getString(COL_GENDER));
+	                    student.setAddress(rs.getString(COL_ADDRESS));
+	                    return student;
+	                }
+	            }
+	        } catch (SQLException e) {
+	        	 System.out.println("Error in deleteStudent: {}"+ e.getMessage()+ e);	        }
+	        return null;
+	    }
+	/**
+	 * Deletes a student by ID from the database.
+	 * 
+	 * @return SUCCESS or INPUT on failure
+	 */
+		@Override
+	    public boolean deleteStudent(int studentId) {
+	        try (Connection conn = dbConnection.getConnection();
+	             PreparedStatement stmt = conn.prepareStatement(DELETE_STUDENT)) {
+	            stmt.setInt(1, studentId);
+	            int rows = stmt.executeUpdate();
+	            return rows > 0;
+	        } catch (SQLException e) {
+	            System.out.println("Error in deleteStudent: {}"+ e.getMessage()+ e);
+	            return false;
+	        }
+	    }
+	
+
+}

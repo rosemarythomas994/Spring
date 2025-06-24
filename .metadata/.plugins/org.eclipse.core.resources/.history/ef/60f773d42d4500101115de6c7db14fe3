@@ -1,0 +1,70 @@
+package com.student.servicelocator;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class ServiceLocator {
+    private static final Logger logger = LoggerFactory.getLogger(ServiceLocator.class);
+    private static ServiceLocator serviceLocator = null;
+    private Map<String, ClassPathXmlApplicationContext> contex = new HashMap<>();
+
+    private ServiceLocator() {
+        // Private constructor for singleton
+    }
+
+    public static ServiceLocator getInstance() {
+        if (serviceLocator == null) {
+           
+                if (serviceLocator == null) {
+                    serviceLocator = new ServiceLocator();
+                }
+            }
+        
+        return serviceLocator;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getFacadeManager(Class<T> facadeManagerClass) {
+        String className = facadeManagerClass.getSimpleName();
+        if ("FacadeManager".equals(className)) {
+            return (T) getFacadeManager();
+        }
+        logger.warn("Unsupported facade class: {}", className);
+        return null;
+    }
+
+    private Object getFacadeManager() {
+        final String CONTEXT = "STUDENT";
+        ClassPathXmlApplicationContext context;
+        try {
+            if (!contex.containsKey(CONTEXT)) {
+                context = new ClassPathXmlApplicationContext("applicationContext.xml");
+                contex.put(CONTEXT, context);
+                logger.info("Initialized Spring context for key: {}", CONTEXT);
+            }else {
+            context = contex.get(CONTEXT);
+            
+            }
+        } catch (Exception e) {
+            logger.error("Failed to load Spring context: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to load Spring context", e);
+        }
+        return context.getBean("facadeManagerBean");
+    }
+
+    public void close() {
+        for (Map.Entry<String, ClassPathXmlApplicationContext> entry : contex.entrySet()) {
+            try {
+                entry.getValue().close();
+                logger.info("Closed Spring context for key: {}", entry.getKey());
+            } catch (Exception e) {
+                logger.error("Error closing Spring context for key {}: {}", entry.getKey(), e.getMessage(), e);
+            }
+        }
+        contex.clear();
+    }
+}

@@ -1,0 +1,55 @@
+package com.studentsearch.controller;
+
+import java.util.List;
+
+import com.student.facade.FacadeManagerBean;
+import com.student.model.Student_Value;
+import com.studentsearch.model.Student;
+import com.studentsearch.util.StudentConverter;
+
+public class StudentController {
+    private FacadeManagerBean facadeManager;
+
+    public StudentController(FacadeManagerBean facadeManager) {
+        this.facadeManager = facadeManager;
+    }
+
+    public StudentController() {
+        this.facadeManager = new FacadeManagerBean(); // Temporary; use DI in production
+    }
+    
+    public List<Student> searchStudents(Student searchStudent) {
+        Student_Value backendStudent = StudentConverter.convertToBackendStudent(searchStudent);
+        List<Student_Value> backendList = facadeManager.searchStudents(backendStudent);
+        return StudentConverter.convertToFrontendStudentList(backendList);
+    }
+
+    public boolean createStudent(Student student) {
+        Student_Value backendStudent = StudentConverter.convertToBackendStudent(student);
+        return facadeManager.createStudent(backendStudent);
+    }
+
+    public Student updateStudent(Student student) {
+        Student_Value backendStudent = StudentConverter.convertToBackendStudent(student);
+        boolean updated = facadeManager.updateStudent(backendStudent);
+        if (updated) {
+            return student;
+        }
+        return null;
+    }
+
+    public boolean deleteStudent(int studentId) {
+        return facadeManager.deleteStudent(studentId);
+    }
+
+    public Student getStudentById(int studentId) {
+        logger.debug("Fetching student with ID: {}", studentId);
+        Student_Value backendStudent = facadeManager.getStudentById(studentId);
+        if (backendStudent == null) {
+            logger.debug("Found student: {}", backendStudent);
+        } else {
+            logger.warn("No student found for ID: {}", studentId);
+        }
+        return StudentConverter.convertToFrontendStudent(backendStudent);
+    }
+}

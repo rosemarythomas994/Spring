@@ -1,0 +1,24 @@
+package snippet;
+
+public class Snippet {
+	DEMO-US
+	
+	Search Student
+	  
+	Student ID
+	Enter Student ID
+	Name
+	Enter Name
+	Department
+	
+	-- Select Department --
+	Date of Birth
+	
+	mm/dd/yyyy
+	Date of Admission
+	
+	mm/dd/yyyy
+	Gender
+	
+}
+

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- Enable component scanning for your packages -->
+    <context:component-scan base-package="com.student" />
+
+    <!-- Define ServiceLocator bean -->
+    <bean id="serviceLocator" class="com.student.servicelocator.ServiceLocator">
+        <!-- Configure any dependencies for ServiceLocator if needed -->
+        <property name="dbConnection" ref="dbConnection" />
+    </bean>
+
+    <!-- Define DBConnection bean -->
+    <bean id="dbConnection" class="com.student.util.DBConnection">
+        <!-- If DBConnection has properties like URL, username, password, configure them here -->
+        <!-- Example: -->
+        <!-- <property name="url" value="jdbc:mysql://localhost:3306/studentdb" /> -->
+        <!-- <property name="username" value="root" /> -->
+        <!-- <property name="password" value="password" /> -->
+    </bean>
+
+    <!-- Define FacadeManagerBean -->
+    <bean id="facadeManager" class="com.student.facade.FacadeManagerBean">
+        <!-- Inject ServiceLocator or other dependencies -->
+        <property name="serviceLocator" ref="serviceLocator" />
+    </bean>
+
+    <!-- Define DateConverter as a utility bean if needed -->
+    <bean id="dateConverter" class="com.student.util.DateConverter" />
+
+    <!-- Optional: Configure Log4j if needed (Spring will use log4j.properties from resources) -->
+    <!-- No explicit configuration required unless you need custom logging setup -->
+
+</beans>

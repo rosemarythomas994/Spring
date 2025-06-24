@@ -1,0 +1,62 @@
+package com.studentsearch.controller;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.student.facade.FacadeManager;
+import com.student.facade.FacadeManagerBean;
+import com.student.model.StudentValue;
+import com.studentsearch.model.Student;
+import com.studentsearch.util.StudentConverter;
+
+public class StudentController {
+	private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
+
+    private FacadeManager facadeManager;
+    
+    
+    public StudentController(FacadeManagerBean facadeManager) {
+        this.facadeManager = facadeManager;
+    }
+
+    public StudentController() {
+        this.facadeManager = new FacadeManagerBean();
+    }
+    
+    public List<Student> searchStudents(Student searchStudent) {
+    	StudentValue backendStudent = StudentConverter.convertToBackendStudent(searchStudent);
+        List<StudentValue> backendList = facadeManager.searchStudents(backendStudent);
+        return StudentConverter.convertToFrontendStudentList(backendList);
+    }
+
+    public boolean createStudent(Student student) {
+    	StudentValue backendStudent = StudentConverter.convertToBackendStudent(student);
+        return facadeManager.createStudent(backendStudent);
+    }
+
+    public Student updateStudent(Student student) {
+    	StudentValue backendStudent = StudentConverter.convertToBackendStudent(student);
+        boolean updated = facadeManager.updateStudent(backendStudent);
+        if (updated) {
+            return student;
+        }
+        return null;
+    }
+
+    public boolean deleteStudent(int studentId) {
+        return facadeManager.deleteStudent(studentId);
+    }
+
+    public Student getStudentById(int studentId) {
+        logger.debug("Fetching student with ID: {}", studentId);
+        StudentValue backendStudent = facadeManager.getStudentById(studentId);
+        if (backendStudent == null) {
+            logger.debug("Found student: {}", backendStudent);
+        } else {
+            logger.warn("No student found for ID: {}", studentId);
+        }
+        return StudentConverter.convertToFrontendStudent(backendStudent);
+    }
+}

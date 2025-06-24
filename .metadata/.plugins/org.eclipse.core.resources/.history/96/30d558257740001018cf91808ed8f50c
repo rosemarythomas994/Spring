@@ -1,0 +1,14 @@
+package com.student.facade;
+
+import java.util.List;
+
+import com.student.model.Student_Value;
+
+public interface Facadeanager {
+	List<StudentValue> searchStudents(StudentValue searchStudent);
+    boolean createStudent(StudentValue student);
+    boolean updateStudent(StudentValue student);
+    StudentValue getStudentById(int studentId);
+    boolean deleteStudent(int studentId);
+
+}

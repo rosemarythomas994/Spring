@@ -1,0 +1,13 @@
+label.studentId=Student ID
+label.name=Name
+label.department=Department
+label.dob=Date of Birth
+label.doa=Date of Admission
+label.gender=Gender
+label.genderMale=Male
+label.genderFemale=Female
+label.genderOther=Other
+button.search=Search
+button.addStudent=Add Student
+button.back=Back
+error.departmentList=Error loading departments
